@@ -2771,8 +2771,13 @@ function saveUserSetup() {
 function currentFestivalDayKey() {
   const fn = (typeof detectFestivalDay === 'function') ? detectFestivalDay() : null;
   if (fn) return DAY_LABELS[fn.dayIdx];
-  const now = new Date();
-  return now.toISOString().slice(0, 10); // fallback: today's date
+  // Fuera de las fechas exactas del festival (p.ej. probando la app antes
+  // de que empiece): se usa SIEMPRE una de las claves reales de DAY_LABELS,
+  // nunca una fecha suelta, porque los listeners de Firebase (mensajes de
+  // voz, etc.) solo escuchan esas claves. Si se devolviera la fecha de hoy
+  // tal cual, lo grabado se guardaría correctamente en Firebase pero jamás
+  // se mostraría en la lista, dando la sensación de que "no se guarda".
+  return DAY_LABELS[0];
 }
 
 // ── PRESENCE & VENUE SCHEMATIC ───────────────────────────────────────
@@ -3333,11 +3338,17 @@ function uploadVoiceMessage(blob, durationSec) {
       alert('Errorea mezua igotzean. Egiaztatu konexioa.');
     },
     async () => {
-      const url = await task.snapshot.ref.getDownloadURL();
-      showVoiceUploadProgress(false);
-      fbDB.ref('voice/' + day).push({
-        uid: user.uid, name: user.name, emoji: user.emoji, url, duration: durationSec, ts: Date.now()
-      });
+      try {
+        const url = await task.snapshot.ref.getDownloadURL();
+        await fbDB.ref('voice/' + day).push({
+          uid: user.uid, name: user.name, emoji: user.emoji, url, duration: durationSec, ts: Date.now()
+        });
+        showVoiceUploadProgress(false);
+      } catch (err) {
+        console.error('Voice metadata save error:', err);
+        showVoiceUploadProgress(false);
+        alert('Audioa igo da baina ezin izan da zerrendan gorde (baimen errorea?). ' + (err && err.message ? err.message : ''));
+      }
     }
   );
 }
