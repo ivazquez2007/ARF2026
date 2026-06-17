@@ -2581,18 +2581,18 @@ if (festivalNow) {
 // 3. Activa "Realtime Database" (modo prueba) y "Storage" (modo prueba)
 // 4. Pega tu config aquí abajo:
 const firebaseConfig = {
-  apiKey:            "TU_API_KEY",
-  authDomain:        "TU_PROYECTO.firebaseapp.com",
-  databaseURL:       "https://TU_PROYECTO-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId:         "TU_PROYECTO",
-  storageBucket:     "TU_PROYECTO.appspot.com",
-  messagingSenderId: "000000000000",
-  appId:             "1:000000000000:web:xxxxxxxxxxxxxxxx"
+  apiKey:            "AIzaSyBPXBKqnZaKZNnmJ9fZ3WO0b2l9_AA8_2k",
+  authDomain:        "arf2026-lagun.firebaseapp.com",
+  databaseURL:       "https://arf2026-lagun-default-rtdb.firebaseio.com",
+  projectId:         "arf2026-lagun",
+  storageBucket:     "arf2026-lagun.firebasestorage.app",
+  messagingSenderId: "971576392193",
+  appId:             "1:971576392193:web:4a6181552eac86cd691e00"
 };
 
 let fbApp = null, fbDB = null, fbStorage = null, fbReady = false;
 try {
-  if (firebaseConfig.apiKey !== "TU_API_KEY") {
+  if (firebaseConfig.apiKey !== "TU_API_KEY" && !firebaseConfig.databaseURL.includes("PENDIENTE")) {
     fbApp     = firebase.initializeApp(firebaseConfig);
     fbDB      = firebase.database();
     fbStorage = firebase.storage();
