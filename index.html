@@ -1205,7 +1205,10 @@
 .amigos-pane.active { display:block; }
 
 @media (max-width: 768px) {
-  .amigos-tab { font-size:1rem; padding:16px 4px; }
+  .amigos-tab { font-size:0.92rem; padding:15px 2px; letter-spacing:0.8px; }
+}
+@media (max-width: 400px) {
+  .amigos-tab { font-size:0.8rem; padding:14px 2px; letter-spacing:0.4px; }
 }
 
 /* ── PLANO OFICIAL DEL RECINTO ──────────────────────────────────── */
@@ -1342,23 +1345,60 @@
 .upload-bar-fill { height:100%; background:var(--gold); width:0%; transition:width .2s; }
 .upload-cancel { color:var(--red); cursor:pointer; font-size:0.78rem; touch-action:manipulation; }
 
-/* ── GALERÍA TAB ──────────────────────────────────────────────── */
+/* ── Estado vacío / divisor de día (compartido: audio, gastos) ──── */
 .gallery-day-title { font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:2px;
   color:var(--gold); padding:14px 16px 6px; }
-.gallery-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; padding:0 12px; }
-.gallery-item { position:relative; aspect-ratio:1; overflow:hidden; border-radius:4px;
-  cursor:pointer; background:#1a1a1a; touch-action:manipulation; }
-.gallery-item img, .gallery-item video { width:100%; height:100%; object-fit:cover; display:block; }
-.gallery-item .gi-video-ico { position:absolute; top:4px; right:4px; font-size:0.9rem;
-  text-shadow:0 1px 3px rgba(0,0,0,.8); }
-.gallery-item .gi-author { position:absolute; bottom:2px; left:3px; font-size:0.85rem;
-  text-shadow:0 1px 3px rgba(0,0,0,.9); }
 .gallery-empty { padding:60px 20px; text-align:center; color:var(--grey);
   font-family:'Barlow Condensed',sans-serif; font-size:1rem; letter-spacing:1px; }
-.gallery-upload-fab { position:fixed; bottom:78px; right:16px; width:54px; height:54px;
+.amigos-fab { position:fixed; bottom:78px; right:16px; width:54px; height:54px;
   border-radius:50%; background:var(--red); color:#fff; font-size:1.5rem; border:none;
   box-shadow:0 4px 14px rgba(0,0,0,.5); cursor:pointer; z-index:50; touch-action:manipulation;
-  display:flex; align-items:center; justify-content:center; }
+  display:flex; align-items:center; justify-content:center; transition:background .15s; }
+.amigos-fab.recording { background:#900; width:auto; padding:0 18px; font-size:0.95rem;
+  font-family:'Barlow Condensed',sans-serif; font-weight:700; letter-spacing:0.5px;
+  animation:fab-pulse 1.1s infinite; }
+@keyframes fab-pulse { 0%,100% { box-shadow:0 4px 14px rgba(0,0,0,.5), 0 0 0 0 rgba(220,30,30,.55); }
+  50% { box-shadow:0 4px 14px rgba(0,0,0,.5), 0 0 0 9px rgba(220,30,30,0); } }
+
+/* ── MEZU AHOZKOAK (voice messages) ──────────────────────────────── */
+.voice-msg-row { display:flex; gap:10px; align-items:flex-start; padding:10px 14px;
+  border-bottom:1px solid #1c1c1c; }
+.vm-emoji { font-size:1.4rem; flex-shrink:0; line-height:1.6; }
+.vm-body { flex:1; min-width:0; }
+.vm-header { display:flex; justify-content:space-between; gap:8px; margin-bottom:3px; }
+.vm-name { font-family:'Barlow Condensed',sans-serif; font-weight:700; color:var(--cream);
+  font-size:0.85rem; letter-spacing:0.3px; }
+.vm-time { font-size:0.72rem; color:var(--grey); flex-shrink:0; }
+.vm-body audio { width:100%; height:34px; }
+
+/* ── GASTUEN BANAKETA (expense splitting) ────────────────────────── */
+.expense-panel { padding:14px; border-bottom:1px solid #222; }
+#expense-form { display:flex; flex-direction:column; gap:8px; }
+#expense-form input, #expense-form select { background:#1a1a1a; border:1px solid #333;
+  border-radius:8px; color:var(--cream); font-family:'Barlow Condensed',sans-serif;
+  font-size:0.95rem; padding:10px 12px; }
+.expense-row2 { display:flex; gap:8px; }
+.expense-row2 input { flex:1; min-width:0; }
+.expense-row2 select { flex:1.4; min-width:0; }
+.expense-participants { display:flex; flex-wrap:wrap; gap:6px; }
+.expense-participant-chip { display:flex; align-items:center; gap:5px; background:#1a1a1a;
+  border:1px solid #333; border-radius:14px; padding:5px 10px 5px 8px; font-size:0.82rem;
+  color:var(--grey); cursor:pointer; touch-action:manipulation; }
+.expense-participant-chip input { accent-color:var(--gold); }
+.expense-add-btn { background:var(--gold); color:#1a1a0d; border:none; border-radius:8px;
+  padding:11px; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:0.95rem;
+  letter-spacing:0.5px; cursor:pointer; touch-action:manipulation; margin-top:4px; }
+.expense-balances-title, .expense-history-title { font-family:'Bebas Neue',sans-serif;
+  font-size:1.1rem; letter-spacing:2px; color:var(--gold); padding:14px 16px 8px; }
+.expense-settlement { padding:8px 16px; font-family:'Barlow Condensed',sans-serif;
+  font-size:0.95rem; color:var(--cream); border-bottom:1px solid #1c1c1c; }
+.expense-row { padding:9px 16px; border-bottom:1px solid #1c1c1c; }
+.expense-row-main { display:flex; justify-content:space-between; gap:10px; }
+.expense-row-desc { font-weight:700; color:var(--cream); font-size:0.9rem; }
+.expense-row-amount { color:var(--gold); font-weight:700; font-size:0.9rem; flex-shrink:0; }
+.expense-row-sub { color:var(--grey); font-size:0.76rem; margin-top:2px;
+  display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.expense-del { color:var(--red); cursor:pointer; touch-action:manipulation; flex-shrink:0; }
 
 /* ── LIGHTBOX VIEWER ──────────────────────────────────────────── */
 #media-lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,.96);
@@ -1564,7 +1604,8 @@
   </div>
   <div class="amigos-tabs">
     <button class="amigos-tab active" onclick="showAmigosTab('mapa')">🗺️ MAPA</button>
-    <button class="amigos-tab" onclick="showAmigosTab('galeria')">📸 GALERIA</button>
+    <button class="amigos-tab" onclick="showAmigosTab('audioa')">🎙️ AUDIOA</button>
+    <button class="amigos-tab" onclick="showAmigosTab('gastuak')">💶 GASTUAK</button>
     <button class="amigos-tab" onclick="openChat('general')">💬 TXATA</button>
   </div>
   <div class="amigos-pane active" id="amigos-mapa">
@@ -1573,9 +1614,24 @@
       <div class="venue-hint">👆 Sakatu mapan zure kokapena ezartzeko</div>
     </div>
   </div>
-  <div class="amigos-pane" id="amigos-galeria" style="position:relative">
-    <div id="gallery-content"><div class="firebase-notice">Konektatzen…</div></div>
-    <button class="gallery-upload-fab" onclick="triggerMediaPicker('gallery')" title="Argazkia edo bideoa igo">📷</button>
+  <div class="amigos-pane" id="amigos-audioa" style="position:relative">
+    <div id="voice-content"><div class="firebase-notice">Konektatzen…</div></div>
+    <button class="amigos-fab" id="voice-record-btn" onclick="toggleVoiceRecording()" title="Mezu ahozkoa grabatu">🎙️</button>
+  </div>
+  <div class="amigos-pane" id="amigos-gastuak">
+    <div class="expense-panel">
+      <form id="expense-form" onsubmit="addExpense(event)">
+        <input type="text" id="expense-desc" placeholder="Zertan gastatu duzue? (adib. Bazkaria)" maxlength="60" required>
+        <div class="expense-row2">
+          <input type="number" id="expense-amount" placeholder="Zenbat €?" min="0.01" step="0.01" inputmode="decimal" required>
+          <select id="expense-payer"></select>
+        </div>
+        <div class="expense-participants" id="expense-participants"></div>
+        <button type="submit" class="expense-add-btn">➕ Gastua gehitu</button>
+      </form>
+    </div>
+    <div id="expense-balances"></div>
+    <div id="expense-history"></div>
   </div>
 </div>
 
@@ -2668,7 +2724,11 @@ function uid() {
 
 function ensureUserSetup(onReady) {
   let u = getUser();
-  if (u && u.name && u.emoji) { onReady(u); return; }
+  if (u && u.name && u.emoji) {
+    registerKnownUser(u);
+    onReady(u);
+    return;
+  }
   // Show setup modal
   const grid = document.getElementById('emoji-grid');
   let selected = EMOJI_OPTIONS[Math.floor(Math.random() * EMOJI_OPTIONS.length)];
@@ -2687,6 +2747,14 @@ function ensureUserSetup(onReady) {
   window._onUserReady = onReady;
 }
 
+// Mantiene un listado global de "quién ha usado la app" en Firebase, para
+// poder elegir participantes en el reparto de gastos aunque no estén
+// conectados ahora mismo (a diferencia de 'presence', que se borra al salir).
+function registerKnownUser(u) {
+  if (!fbReady || !u || !u.uid) return;
+  fbDB.ref('users/' + u.uid).set({ name: u.name, emoji: u.emoji, ts: Date.now() });
+}
+
 function saveUserSetup() {
   const name = document.getElementById('user-name-input').value.trim();
   if (!name) { document.getElementById('user-name-input').focus(); return; }
@@ -2694,6 +2762,7 @@ function saveUserSetup() {
   // El uid se deriva del nombre: así eres "tú" en cualquier dispositivo.
   const u = { uid: slugifyName(name), name: name.slice(0, 16), emoji };
   localStorage.setItem(USER_KEY, JSON.stringify(u));
+  registerKnownUser(u);
   document.getElementById('user-setup-overlay').classList.remove('open');
   if (window._onUserReady) window._onUserReady(u);
 }
@@ -2714,15 +2783,15 @@ function initAmigos() {
   ensureUserSetup(user => {
     currentAmigosUser = user;
     if (!fbReady) {
-      showFirebaseNotConfigured(document.getElementById('presence-list'));
-      showFirebaseNotConfigured(document.getElementById('picks-grid'));
-      showFirebaseNotConfigured(document.getElementById('gallery-content'));
+      showFirebaseNotConfigured(document.getElementById('voice-content'));
+      showFirebaseNotConfigured(document.getElementById('expense-history'));
       return;
     }
     setupPresence(user);
     setupVenueMap(user);
     setupPicksSync(user);
-    setupGallery();
+    setupVoiceMessages();
+    setupExpenses();
   });
 }
 
@@ -3040,8 +3109,8 @@ function triggerMediaPicker(target) {
       input.setAttribute('accept', 'video/*');
       input.setAttribute('capture', 'environment');
     } else {
-      // FAB "subir a galería": se permite elegir foto o vídeo ya existente,
-      // así que no se fuerza la cámara.
+      // Fallback genérico (no debería usarse ya, la galería se ha eliminado):
+      // permite elegir cualquier foto o vídeo existente sin forzar la cámara.
       input.setAttribute('accept', 'image/*,video/*');
       input.removeAttribute('capture');
     }
@@ -3092,9 +3161,7 @@ function showUploadProgress(show) {
     bar.id = 'upload-progress-row';
     bar.className = 'upload-progress-row';
     bar.innerHTML = `<span>⬆ Igotzen…</span><div class="upload-bar-track"><div class="upload-bar-fill" id="upload-bar-fill"></div></div>`;
-    const anchor = _mediaUploadTarget === 'chat'
-      ? document.querySelector('.chat-input-row')
-      : document.getElementById('amigos-galeria');
+    const anchor = document.querySelector('.chat-input-row');
     anchor.parentNode.insertBefore(bar, anchor);
   } else if (!show && bar) {
     bar.remove();
@@ -3132,13 +3199,7 @@ function uploadMedia(blob, type, originalName) {
 }
 
 function saveMediaMetadata(url, type, day, user) {
-  const entry = { uid: user.uid, name: user.name, emoji: user.emoji,
-                  url, type, ts: Date.now(), day };
-
-  // Always store in the shared gallery
-  fbDB.ref('gallery/' + day).push(entry);
-
-  // If uploaded from chat, also post as a chat message
+  // Si se subió desde el chat, se publica como mensaje
   if (_mediaUploadTarget === 'chat') {
     fbDB.ref('chat/' + currentChatRoom).push({
       uid: user.uid, name: user.name, emoji: user.emoji,
@@ -3147,45 +3208,309 @@ function saveMediaMetadata(url, type, day, user) {
   }
 }
 
-// ── GALERÍA COMPARTIDA ───────────────────────────────────────────────
-let galleryListenerRefs = [];
+// ════════════════════════════════════════════════════════════════════
+// ── MEZU AHOZKOAK: grabar y escuchar mensajes de voz del grupo ───────
+// ════════════════════════════════════════════════════════════════════
+const MAX_VOICE_SECONDS = 120; // tope de 2 minutos por mensaje
+let mediaRecorder = null;
+let recordedChunks = [];
+let recordingStartTs = 0;
+let recordingTimerInterval = null;
 
-function setupGallery() {
-  galleryListenerRefs.forEach(r => r.off());
-  galleryListenerRefs = [];
-  const allData = {};
-  DAY_LABELS.forEach(day => {
-    const ref = fbDB.ref('gallery/' + day);
-    galleryListenerRefs.push(ref);
-    ref.on('value', snap => {
-      allData[day] = snap.val() || {};
-      renderGallery(allData);
+function toggleVoiceRecording() {
+  if (mediaRecorder && mediaRecorder.state === 'recording') stopVoiceRecording();
+  else startVoiceRecording();
+}
+
+function startVoiceRecording() {
+  if (!fbReady) { alert('Konfiguratu Firebase mezu ahozkoak bidaltzeko.'); return; }
+  if (!window.isSecureContext) {
+    alert('Mikrofonoa erabiltzeko gunea HTTPS bidez (edo localhost-etik) zerbitzatu behar da. Fitxategia zuzenean irekita (file://) edo http:// bidez ez du funtzionatuko.');
+    return;
+  }
+  if (!navigator.mediaDevices || !window.MediaRecorder) {
+    alert('Zure nabigatzaileak ez du audioa grabatzea onartzen.');
+    return;
+  }
+  ensureUserSetup(() => {
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+      const candidates = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/aac'];
+      const mimeType = candidates.find(t => window.MediaRecorder.isTypeSupported && window.MediaRecorder.isTypeSupported(t)) || '';
+      mediaRecorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
+      recordedChunks = [];
+      mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
+      mediaRecorder.onstop = () => {
+        stream.getTracks().forEach(t => t.stop());
+        const durationSec = Math.round((Date.now() - recordingStartTs) / 1000);
+        if (durationSec < 1) return; // grabación demasiado corta, se descarta
+        const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
+        uploadVoiceMessage(blob, durationSec);
+      };
+      mediaRecorder.start();
+      recordingStartTs = Date.now();
+      setVoiceRecordingUI(true);
+      recordingTimerInterval = setInterval(() => {
+        const secs = Math.floor((Date.now() - recordingStartTs) / 1000);
+        const btn = document.getElementById('voice-record-btn');
+        if (btn) btn.textContent = '⏹ ' + secs + 's';
+        if (secs >= MAX_VOICE_SECONDS) stopVoiceRecording();
+      }, 500);
+    }).catch(err => {
+      console.error('Mic error:', err.name, err.message);
+      alert(micErrorMessage(err));
     });
   });
 }
 
-function renderGallery(allData) {
-  const el = document.getElementById('gallery-content');
+// Traduce el error de getUserMedia a un mensaje útil según la causa real
+// (denegado, sin micrófono, en uso por otra app, etc.) en vez de un
+// "no hay acceso" genérico que no ayuda a saber qué hacer.
+function micErrorMessage(err) {
+  switch (err && err.name) {
+    case 'NotAllowedError':
+    case 'PermissionDeniedError':
+      return 'Mikrofonorako baimena ukatuta dago. Sakatu helbide-barrako 🔒/ⓘ ikonoa, eman mikrofono baimena gune honi, eta saiatu berriro.';
+    case 'NotFoundError':
+    case 'DevicesNotFoundError':
+      return 'Ez da mikrofonorik aurkitu gailu honetan.';
+    case 'NotReadableError':
+    case 'TrackStartError':
+      return 'Mikrofonoa beste aplikazio batek erabiltzen ari da dagoeneko.';
+    case 'SecurityError':
+      return 'Nabigatzaileak segurtasun arrazoiengatik blokeatu du mikrofonoa (gunea HTTPS bidez zerbitzatu behar da).';
+    default:
+      return 'Ez da mikrofonora sarbiderik lortu (' + (err && err.name ? err.name : 'errore ezezaguna') + ').';
+  }
+}
+
+function stopVoiceRecording() {
+  if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+  setVoiceRecordingUI(false);
+  if (recordingTimerInterval) { clearInterval(recordingTimerInterval); recordingTimerInterval = null; }
+}
+
+function setVoiceRecordingUI(recording) {
+  const btn = document.getElementById('voice-record-btn');
+  if (!btn) return;
+  btn.classList.toggle('recording', recording);
+  if (!recording) btn.textContent = '🎙️';
+}
+
+function showVoiceUploadProgress(show) {
+  let bar = document.getElementById('voice-upload-progress-row');
+  if (show && !bar) {
+    bar = document.createElement('div');
+    bar.id = 'voice-upload-progress-row';
+    bar.className = 'upload-progress-row';
+    bar.innerHTML = `<span>⬆ Igotzen…</span><div class="upload-bar-track"><div class="upload-bar-fill" id="voice-upload-bar-fill"></div></div>`;
+    const anchor = document.getElementById('amigos-audioa');
+    anchor.parentNode.insertBefore(bar, anchor);
+  } else if (!show && bar) {
+    bar.remove();
+  }
+}
+
+function uploadVoiceMessage(blob, durationSec) {
+  const user = getUser();
+  if (!user) return;
+  const day  = currentFestivalDayKey();
+  const ext  = (blob.type || '').includes('mp4') ? 'm4a' : 'webm';
+  const path = `voice/${day}/${user.uid}_${Date.now()}.${ext}`;
+  const ref  = fbStorage.ref(path);
+
+  showVoiceUploadProgress(true);
+  const task = ref.put(blob, { contentType: blob.type || 'audio/webm' });
+
+  task.on('state_changed',
+    snap => {
+      const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+      const fill = document.getElementById('voice-upload-bar-fill');
+      if (fill) fill.style.width = pct + '%';
+    },
+    err => {
+      console.error('Voice upload error:', err);
+      showVoiceUploadProgress(false);
+      alert('Errorea mezua igotzean. Egiaztatu konexioa.');
+    },
+    async () => {
+      const url = await task.snapshot.ref.getDownloadURL();
+      showVoiceUploadProgress(false);
+      fbDB.ref('voice/' + day).push({
+        uid: user.uid, name: user.name, emoji: user.emoji, url, duration: durationSec, ts: Date.now()
+      });
+    }
+  );
+}
+
+let voiceListenerRefs = [];
+
+function setupVoiceMessages() {
+  voiceListenerRefs.forEach(r => r.off());
+  voiceListenerRefs = [];
+  const allData = {};
+  DAY_LABELS.forEach(day => {
+    const ref = fbDB.ref('voice/' + day);
+    voiceListenerRefs.push(ref);
+    ref.on('value', snap => {
+      allData[day] = snap.val() || {};
+      renderVoiceMessages(allData);
+    });
+  });
+}
+
+function renderVoiceMessages(allData) {
+  const el = document.getElementById('voice-content');
+  if (!el) return;
   const days = DAY_LABELS.filter(d => allData[d] && Object.keys(allData[d]).length > 0);
   if (!days.length) {
-    el.innerHTML = `<div class="gallery-empty">📸<br><br>Oraindik ez dago argazkirik ez bideorik.<br>Igo lehena botoi gorriarekin.</div>`;
+    el.innerHTML = `<div class="gallery-empty">🎙️<br><br>Oraindik ez dago mezu ahozkorik.<br>Grabatu lehena beheko botoiarekin.</div>`;
     return;
   }
   el.innerHTML = days.map(day => {
     const items = Object.values(allData[day]).sort((a,b) => b.ts - a.ts);
     return `
       <div class="gallery-day-title">${day}</div>
-      <div class="gallery-grid">
-        ${items.map(it => `
-          <div class="gallery-item" onclick="openLightbox('${it.url}','${it.type}','${(it.name||'').replace(/'/g,"\\'")}','${new Date(it.ts).toLocaleString('es-ES')}')">
-            ${it.type === 'video'
-              ? `<video src="${it.url}" muted preload="metadata"></video><span class="gi-video-ico">▶</span>`
-              : `<img src="${it.url}" loading="lazy">`}
-            <span class="gi-author">${it.emoji||''}</span>
+      ${items.map(it => `
+        <div class="voice-msg-row">
+          <span class="vm-emoji">${it.emoji || '🎤'}</span>
+          <div class="vm-body">
+            <div class="vm-header">
+              <span class="vm-name">${escapeHtml(it.name || '?')}</span>
+              <span class="vm-time">${new Date(it.ts).toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' })}</span>
+            </div>
+            <audio src="${it.url}" controls preload="none"></audio>
           </div>
-        `).join('')}
-      </div>`;
+        </div>
+      `).join('')}`;
   }).join('');
+}
+
+// ════════════════════════════════════════════════════════════════════
+// ── GASTUEN BANAKETA: reparto de gastos del grupo (estilo Splitwise) ─
+// ════════════════════════════════════════════════════════════════════
+let knownUsers = {};   // uid -> {name, emoji}
+let expensesData = {}; // pushId -> {desc, amount, payerUid, payerName, payerEmoji, participants, ts}
+
+function setupExpenses() {
+  const me = getUser();
+  if (me) knownUsers[me.uid] = { name: me.name, emoji: me.emoji }; // disponible al instante, sin esperar al servidor
+  fbDB.ref('users').on('value', snap => {
+    knownUsers = snap.val() || {};
+    if (me && !knownUsers[me.uid]) knownUsers[me.uid] = { name: me.name, emoji: me.emoji };
+    renderExpenseParticipants();
+    renderExpenseBalances();
+  });
+  fbDB.ref('expenses').on('value', snap => {
+    expensesData = snap.val() || {};
+    renderExpenseBalances();
+    renderExpenseHistory();
+  });
+}
+
+function renderExpenseParticipants() {
+  const wrap = document.getElementById('expense-participants');
+  const payerSel = document.getElementById('expense-payer');
+  if (!wrap || !payerSel) return;
+  const me = getUser();
+  const entries = Object.entries(knownUsers).sort((a,b) => (a[1].name||'').localeCompare(b[1].name||''));
+  payerSel.innerHTML = entries.map(([id, u]) =>
+    `<option value="${id}"${me && id === me.uid ? ' selected' : ''}>${u.emoji||''} ${escapeHtml(u.name||id)}</option>`
+  ).join('');
+  wrap.innerHTML = entries.map(([id, u]) => `
+    <label class="expense-participant-chip">
+      <input type="checkbox" value="${id}" checked> ${u.emoji||''} ${escapeHtml(u.name||id)}
+    </label>`).join('');
+}
+
+function addExpense(e) {
+  e.preventDefault();
+  if (!fbReady) { alert('Konfiguratu Firebase gastuak partekatzeko.'); return; }
+  const desc = document.getElementById('expense-desc').value.trim();
+  const amount = parseFloat(document.getElementById('expense-amount').value);
+  const payerUid = document.getElementById('expense-payer').value;
+  const checked = [...document.querySelectorAll('#expense-participants input:checked')].map(c => c.value);
+  if (!desc || !amount || amount <= 0 || !checked.length || !payerUid) return;
+  const payer = knownUsers[payerUid] || {};
+  fbDB.ref('expenses').push({
+    desc, amount, payerUid, payerName: payer.name || '?', payerEmoji: payer.emoji || '',
+    participants: checked, ts: Date.now()
+  });
+  document.getElementById('expense-form').reset();
+  renderExpenseParticipants(); // vuelve a marcar todas las casillas tras el reset
+}
+
+function deleteExpense(id) {
+  if (!confirm('Gastu hau ezabatu nahi duzu?')) return;
+  fbDB.ref('expenses/' + id).remove();
+}
+
+function renderExpenseHistory() {
+  const el = document.getElementById('expense-history');
+  if (!el) return;
+  const myUid = uid();
+  const entries = Object.entries(expensesData).sort((a,b) => b[1].ts - a[1].ts);
+  if (!entries.length) {
+    el.innerHTML = `<div class="gallery-empty">💶<br><br>Oraindik ez da gasturik erregistratu.</div>`;
+    return;
+  }
+  el.innerHTML = `<div class="expense-history-title">Historiala</div>` + entries.map(([id, ex]) => {
+    const parts = ex.participants || [];
+    const per = parts.length ? ex.amount / parts.length : 0;
+    return `<div class="expense-row">
+      <div class="expense-row-main">
+        <span class="expense-row-desc">${escapeHtml(ex.desc || '')}</span>
+        <span class="expense-row-amount">${(ex.amount||0).toFixed(2)} €</span>
+      </div>
+      <div class="expense-row-sub">
+        <span>${ex.payerEmoji||''} ${escapeHtml(ex.payerName||'?')} ordaindu zuen · ${parts.length} pertsonaren artean (${per.toFixed(2)} €/buru)</span>
+        ${ex.payerUid === myUid ? `<span class="expense-del" onclick="deleteExpense('${id}')">🗑</span>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Calcula el saldo neto de cada persona y propone el número mínimo de
+// pagos para dejar las cuentas a cero (algoritmo voraz típico de las
+// apps de reparto de gastos).
+function renderExpenseBalances() {
+  const el = document.getElementById('expense-balances');
+  if (!el) return;
+  const balances = {}; // uid -> neto (positivo = le deben, negativo = debe)
+  Object.values(expensesData).forEach(ex => {
+    const parts = ex.participants || [];
+    if (!parts.length || !ex.amount) return;
+    const share = ex.amount / parts.length;
+    balances[ex.payerUid] = (balances[ex.payerUid] || 0) + ex.amount;
+    parts.forEach(pUid => { balances[pUid] = (balances[pUid] || 0) - share; });
+  });
+  const label = id => knownUsers[id] ? `${knownUsers[id].emoji||''} ${escapeHtml(knownUsers[id].name||id)}` : id;
+
+  const creditors = [], debtors = [];
+  Object.entries(balances).forEach(([id, v]) => {
+    const r = Math.round(v * 100) / 100;
+    if (r > 0.005) creditors.push([id, r]);
+    else if (r < -0.005) debtors.push([id, -r]);
+  });
+  creditors.sort((a,b) => b[1]-a[1]);
+  debtors.sort((a,b) => b[1]-a[1]);
+
+  const settlements = [];
+  let i = 0, j = 0;
+  while (i < debtors.length && j < creditors.length) {
+    const pay = Math.min(debtors[i][1], creditors[j][1]);
+    settlements.push([debtors[i][0], creditors[j][0], pay]);
+    debtors[i][1] -= pay; creditors[j][1] -= pay;
+    if (debtors[i][1] < 0.01) i++;
+    if (creditors[j][1] < 0.01) j++;
+  }
+
+  if (!Object.keys(expensesData).length) { el.innerHTML = ''; return; }
+  el.innerHTML = `<div class="expense-balances-title">Saldoak</div>` +
+    (settlements.length
+      ? settlements.map(([from, to, amt]) =>
+          `<div class="expense-settlement"><b>${label(from)}</b> → <b>${label(to)}</b>: ${amt.toFixed(2)} €</div>`
+        ).join('')
+      : `<div class="expense-settlement">✅ Denak garbi daude.</div>`);
 }
 
 // ── LIGHTBOX VIEWER ──────────────────────────────────────────────────
