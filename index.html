@@ -1196,12 +1196,17 @@
 /* ── AMIGOS SECTION ───────────────────────────────────────────── */
 #amigos-section { display:none; flex-direction:column; height:calc(100vh - 56px); }
 .amigos-tabs { display:flex; background:#111; border-bottom:1px solid #2a2a2a; flex-shrink:0; }
-.amigos-tab { flex:1; padding:12px 4px; background:none; border:none; color:var(--grey);
-  font-family:'Barlow Condensed',sans-serif; font-size:0.85rem; letter-spacing:1px;
-  cursor:pointer; border-bottom:2px solid transparent; transition:all .15s; }
-.amigos-tab.active { color:var(--gold); border-bottom-color:var(--gold); }
+.amigos-tab { flex:1; padding:18px 8px; background:none; border:none; color:var(--cream);
+  font-family:'Barlow Condensed',sans-serif; font-size:1.15rem; font-weight:700; letter-spacing:1.5px;
+  cursor:pointer; border-bottom:3px solid transparent; transition:all .15s; }
+.amigos-tab:hover { color:var(--off-white); background:rgba(255,255,255,0.04); }
+.amigos-tab.active { color:var(--gold); border-bottom-color:var(--gold); background:rgba(184,148,31,0.1); }
 .amigos-pane { display:none; flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
 .amigos-pane.active { display:block; }
+
+@media (max-width: 768px) {
+  .amigos-tab { font-size:1rem; padding:16px 4px; }
+}
 
 /* ── PLANO OFICIAL DEL RECINTO ──────────────────────────────────── */
 /* La relación de aspecto coincide con la imagen real (1261×1247) para que
@@ -1559,8 +1564,6 @@
   </div>
   <div class="amigos-tabs">
     <button class="amigos-tab active" onclick="showAmigosTab('mapa')">🗺️ MAPA</button>
-    <button class="amigos-tab" onclick="showAmigosTab('presencia')">👥 PRESENTZIA</button>
-    <button class="amigos-tab" onclick="showAmigosTab('picks')">❤️ AUKERAK</button>
     <button class="amigos-tab" onclick="showAmigosTab('galeria')">📸 GALERIA</button>
     <button class="amigos-tab" onclick="openChat('general')">💬 TXATA</button>
   </div>
@@ -1569,12 +1572,6 @@
       <!-- El SVG se inyecta por JS en renderVenueMap() -->
       <div class="venue-hint">👆 Sakatu mapan zure kokapena ezartzeko</div>
     </div>
-  </div>
-  <div class="amigos-pane" id="amigos-presencia">
-    <div class="presence-list" id="presence-list"><div class="firebase-notice">Konektatzen…</div></div>
-  </div>
-  <div class="amigos-pane" id="amigos-picks">
-    <div class="picks-grid" id="picks-grid"><div class="firebase-notice">Konektatzen…</div></div>
   </div>
   <div class="amigos-pane" id="amigos-galeria" style="position:relative">
     <div id="gallery-content"><div class="firebase-notice">Konektatzen…</div></div>
@@ -2622,6 +2619,7 @@ try {
 }
 
 function showFirebaseNotConfigured(container) {
+  if (!container) return;
   container.innerHTML = `<div class="firebase-notice">
     🔧 Lagunak funtzioak Firebase konfiguratzea behar dute.<br><br>
     Editatu fitxategia eta bete <code>firebaseConfig</code> zure
@@ -2770,6 +2768,7 @@ const STAGE_LABEL = { god:'GOD', respect:'RESPECT', lasalve:'LA SALVE',
 
 function renderPresenceList(data, myUid) {
   const el = document.getElementById('presence-list');
+  if (!el) return; // panel "PRESENTZIA" eliminado de la UI
   const entries = Object.entries(data);
   if (!entries.length) {
     el.innerHTML = `<div class="firebase-notice">Oraindik ez dago inor konektatuta.<br>Partekatu app-a zure lagunekin 🎸</div>`;
@@ -2898,6 +2897,7 @@ function syncMyPicksToFirebase() {
 
 function renderFriendPicks(allPicks, myUid) {
   const el = document.getElementById('picks-grid');
+  if (!el) return; // panel "AUKERAK" eliminado de la UI
   const myBands = new Set((allPicks[myUid] && allPicks[myUid].bands) || []);
   const entries = Object.entries(allPicks);
   if (!entries.length) {
