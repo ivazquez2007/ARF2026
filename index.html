@@ -1587,7 +1587,8 @@
   </div>
   <div class="chat-messages" id="chat-messages"></div>
   <div class="chat-input-row">
-    <button class="chat-camera-btn" onclick="triggerMediaPicker('chat')" title="Argazkia edo bideoa bidali">📷</button>
+    <button class="chat-camera-btn" onclick="triggerMediaPicker('chat')" title="Argazkia atera">📷</button>
+    <button class="chat-camera-btn" onclick="triggerMediaPicker('chat-video')" title="Bideoa grabatu">🎥</button>
     <input class="chat-input" id="chat-input" type="text" placeholder="Idatzi mezu bat…" maxlength="200" autocomplete="off"/>
     <button class="chat-send" onclick="sendChatMessage()">➤</button>
   </div>
@@ -3024,15 +3025,26 @@ let _mediaUploadTarget = 'chat'; // 'chat' | 'gallery'
 function triggerMediaPicker(target) {
   if (!fbReady) { alert('Konfiguratu Firebase argazkiak eta bideoak igotzeko.'); return; }
   ensureUserSetup(() => {
-    _mediaUploadTarget = target;
+    _mediaUploadTarget = (target === 'chat-video') ? 'chat' : target;
     const input = document.getElementById('media-file-input');
-    // El botón de la cámara del txat debe abrir la cámara directamente
-    // (sin esto, algunos navegadores —sobre todo Android— abren la
-    // galería de archivos en lugar de la cámara). El FAB de "subir a
-    // galería" se deja sin 'capture' para poder elegir un archivo
-    // ya existente.
-    if (target === 'chat') input.setAttribute('capture', 'environment');
-    else input.removeAttribute('capture');
+    if (target === 'chat') {
+      // El atributo 'capture' solo abre la cámara de forma fiable cuando
+      // 'accept' tiene un único tipo de medio: con "image/*,video/*" mezclado,
+      // muchos navegadores (sobre todo Android) lo ignoran y muestran el
+      // selector de archivos/galería en su lugar. Por eso aquí se limita a
+      // foto, que es lo que indica el icono 📷 del botón.
+      input.setAttribute('accept', 'image/*');
+      input.setAttribute('capture', 'environment');
+    } else if (target === 'chat-video') {
+      // Mismo motivo que arriba, pero forzando la cámara de vídeo (🎥).
+      input.setAttribute('accept', 'video/*');
+      input.setAttribute('capture', 'environment');
+    } else {
+      // FAB "subir a galería": se permite elegir foto o vídeo ya existente,
+      // así que no se fuerza la cámara.
+      input.setAttribute('accept', 'image/*,video/*');
+      input.removeAttribute('capture');
+    }
     input.click();
   });
 }
