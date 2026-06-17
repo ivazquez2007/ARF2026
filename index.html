@@ -3025,7 +3025,15 @@ function triggerMediaPicker(target) {
   if (!fbReady) { alert('Konfiguratu Firebase argazkiak eta bideoak igotzeko.'); return; }
   ensureUserSetup(() => {
     _mediaUploadTarget = target;
-    document.getElementById('media-file-input').click();
+    const input = document.getElementById('media-file-input');
+    // El botón de la cámara del txat debe abrir la cámara directamente
+    // (sin esto, algunos navegadores —sobre todo Android— abren la
+    // galería de archivos en lugar de la cámara). El FAB de "subir a
+    // galería" se deja sin 'capture' para poder elegir un archivo
+    // ya existente.
+    if (target === 'chat') input.setAttribute('capture', 'environment');
+    else input.removeAttribute('capture');
+    input.click();
   });
 }
 
