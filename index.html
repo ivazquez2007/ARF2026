@@ -1280,6 +1280,9 @@
 .chat-messages { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:8px 12px; }
 .chat-msg { margin:6px 0; }
 .chat-msg-header { display:flex; align-items:baseline; gap:6px; }
+.cm-del { margin-left:auto; color:var(--grey-light); cursor:pointer; font-size:0.9rem;
+  touch-action:manipulation; flex-shrink:0; }
+.cm-del:hover { color:var(--red); }
 .cm-emoji { font-size:1rem; }
 .cm-name { font-size:0.9rem; font-weight:700; color:var(--gold); }
 .cm-time { font-size:0.84rem; color:var(--grey-light); }
@@ -1382,9 +1385,13 @@
 .expense-row2 select { flex:1.4; min-width:0; }
 .expense-participants { display:flex; flex-wrap:wrap; gap:6px; }
 .expense-participant-chip { display:flex; align-items:center; gap:5px; background:#1a1a1a;
-  border:1px solid #333; border-radius:14px; padding:5px 10px 5px 8px; font-size:0.92rem;
-  color:var(--grey-light); cursor:pointer; touch-action:manipulation; }
+  border:1px solid #333; border-radius:14px; padding:5px 6px 5px 8px; font-size:0.92rem;
+  color:var(--grey-light); touch-action:manipulation; }
+.expense-participant-chip label { display:flex; align-items:center; gap:5px; cursor:pointer; touch-action:manipulation; }
 .expense-participant-chip input { accent-color:var(--gold); }
+.epc-del { color:var(--grey-light); cursor:pointer; touch-action:manipulation; padding:0 2px;
+  font-size:0.85rem; line-height:1; }
+.epc-del:hover { color:var(--red); }
 .expense-add-btn { background:var(--gold); color:#1a1a0d; border:none; border-radius:8px;
   padding:11px; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:0.95rem;
   letter-spacing:0.5px; cursor:pointer; touch-action:manipulation; margin-top:4px; }
@@ -1396,8 +1403,10 @@
 .expense-row-main { display:flex; justify-content:space-between; gap:10px; }
 .expense-row-desc { font-weight:700; color:var(--cream); font-size:0.9rem; }
 .expense-row-amount { color:var(--gold); font-weight:700; font-size:0.9rem; flex-shrink:0; }
-.expense-row-sub { color:var(--grey-light); font-size:0.88rem; margin-top:2px;
-  display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.expense-row-payer { color:var(--grey-light); font-size:0.85rem; margin-top:3px; }
+.expense-row-split { color:var(--grey-light); font-size:0.85rem; margin-top:1px; }
+.expense-row-sub { color:var(--grey-light); font-size:0.88rem; margin-top:4px;
+  display:flex; justify-content:flex-end; align-items:center; gap:8px; }
 .expense-del { color:var(--red); cursor:pointer; touch-action:manipulation; flex-shrink:0; }
 
 /* ── LIGHTBOX VIEWER ──────────────────────────────────────────── */
@@ -3031,8 +3040,8 @@ function listenToChatRoom(room) {
 function renderChatMessages(data) {
   const el = document.getElementById('chat-messages');
   const myUid = uid();
-  const msgs = Object.values(data).sort((a,b) => a.ts - b.ts);
-  el.innerHTML = msgs.map(m => {
+  const msgs = Object.entries(data).sort((a,b) => a[1].ts - b[1].ts);
+  el.innerHTML = msgs.map(([key, m]) => {
     const mine = m.uid === myUid;
     const time = new Date(m.ts).toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' });
     let mediaHtml = '';
@@ -3048,12 +3057,25 @@ function renderChatMessages(data) {
         <span class="cm-emoji">${m.emoji||'🎵'}</span>
         <span class="cm-name">${m.name||'?'}</span>
         <span class="cm-time">${time}</span>
+        ${mine ? `<span class="cm-del" onclick="deleteChatMessage('${key}','${(m.mediaUrl||'').replace(/'/g,"\\'")}')" title="Mezua ezabatu">🗑</span>` : ''}
       </div>
       ${m.text ? `<div class="cm-text">${escapeHtml(m.text)}</div>` : ''}
       ${mediaHtml}
     </div>`;
   }).join('');
   el.scrollTop = el.scrollHeight + 9999;
+}
+
+function deleteChatMessage(key, mediaUrl) {
+  if (!confirm('Mezu hau ezabatu nahi duzu?')) return;
+  fbDB.ref('chat/' + currentChatRoom + '/' + key).remove().catch(err => {
+    console.error('Delete chat message error:', err);
+    alert('Ezin izan da mezua ezabatu.');
+  });
+  if (mediaUrl) {
+    // Limpieza del archivo en Storage; si falla (ya borrado, permisos…) no pasa nada grave.
+    try { fbStorage.refFromURL(mediaUrl).delete().catch(() => {}); } catch (e) {}
+  }
 }
 
 function escapeHtml(s) {
@@ -3372,28 +3394,41 @@ function setupVoiceMessages() {
 function renderVoiceMessages(allData) {
   const el = document.getElementById('voice-content');
   if (!el) return;
+  const myUid = uid();
   const days = DAY_LABELS.filter(d => allData[d] && Object.keys(allData[d]).length > 0);
   if (!days.length) {
     el.innerHTML = `<div class="gallery-empty">🎙️<br><br>Oraindik ez dago mezu ahozkorik.<br>Grabatu lehena beheko botoiarekin.</div>`;
     return;
   }
   el.innerHTML = days.map(day => {
-    const items = Object.values(allData[day]).sort((a,b) => b.ts - a.ts);
+    const items = Object.entries(allData[day]).sort((a,b) => b[1].ts - a[1].ts);
     return `
       <div class="gallery-day-title">${day}</div>
-      ${items.map(it => `
+      ${items.map(([key, it]) => `
         <div class="voice-msg-row">
           <span class="vm-emoji">${it.emoji || '🎤'}</span>
           <div class="vm-body">
             <div class="vm-header">
               <span class="vm-name">${escapeHtml(it.name || '?')}</span>
               <span class="vm-time">${new Date(it.ts).toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' })}</span>
+              ${it.uid === myUid ? `<span class="cm-del" onclick="deleteVoiceMessage('${day}','${key}','${(it.url||'').replace(/'/g,"\\'")}')" title="Mezua ezabatu">🗑</span>` : ''}
             </div>
             <audio src="${it.url}" controls preload="none"></audio>
           </div>
         </div>
       `).join('')}`;
   }).join('');
+}
+
+function deleteVoiceMessage(day, key, url) {
+  if (!confirm('Mezu ahozko hau ezabatu nahi duzu?')) return;
+  fbDB.ref('voice/' + day + '/' + key).remove().catch(err => {
+    console.error('Delete voice message error:', err);
+    alert('Ezin izan da mezua ezabatu.');
+  });
+  if (url) {
+    try { fbStorage.refFromURL(url).delete().catch(() => {}); } catch (e) {}
+  }
 }
 
 // ════════════════════════════════════════════════════════════════════
@@ -3428,9 +3463,21 @@ function renderExpenseParticipants() {
     `<option value="${id}"${me && id === me.uid ? ' selected' : ''}>${u.emoji||''} ${escapeHtml(u.name||id)}</option>`
   ).join('');
   wrap.innerHTML = entries.map(([id, u]) => `
-    <label class="expense-participant-chip">
-      <input type="checkbox" value="${id}" checked> ${u.emoji||''} ${escapeHtml(u.name||id)}
-    </label>`).join('');
+    <span class="expense-participant-chip">
+      <label for="ep_${id}"><input type="checkbox" id="ep_${id}" value="${id}" checked> ${u.emoji||''} ${escapeHtml(u.name||id)}</label>
+      <span class="epc-del" onclick="deleteKnownUser('${id}')" title="Kide hau ezabatu zerrendatik">✕</span>
+    </span>`).join('');
+}
+
+// Quita a alguien del registro de "kideak" (no afecta a gastos ya creados,
+// que guardan el nombre/emoji de cada momento; solo deja de aparecer como
+// opción al crear gastos nuevos).
+function deleteKnownUser(id) {
+  if (!confirm('Kide hau zerrendatik ezabatu nahi duzu?')) return;
+  fbDB.ref('users/' + id).remove().catch(err => {
+    console.error('Delete user error:', err);
+    alert('Ezin izan da kidea ezabatu.');
+  });
 }
 
 function addExpense(e) {
@@ -3467,14 +3514,19 @@ function renderExpenseHistory() {
   el.innerHTML = `<div class="expense-history-title">Historiala</div>` + entries.map(([id, ex]) => {
     const parts = ex.participants || [];
     const per = parts.length ? ex.amount / parts.length : 0;
+    const names = parts.map(pid => {
+      const u = knownUsers[pid];
+      return u ? `${u.emoji||''} ${escapeHtml(u.name||pid)}`.trim() : pid;
+    }).join(', ');
     return `<div class="expense-row">
       <div class="expense-row-main">
         <span class="expense-row-desc">${escapeHtml(ex.desc || '')}</span>
         <span class="expense-row-amount">${(ex.amount||0).toFixed(2)} €</span>
       </div>
+      <div class="expense-row-payer">${ex.payerEmoji||''} ${escapeHtml(ex.payerName||'?')} ordaindu zuen</div>
+      <div class="expense-row-split">Banatuta (${per.toFixed(2)} €/buru): ${names || '—'}</div>
       <div class="expense-row-sub">
-        <span>${ex.payerEmoji||''} ${escapeHtml(ex.payerName||'?')} ordaindu zuen · ${parts.length} pertsonaren artean (${per.toFixed(2)} €/buru)</span>
-        ${ex.payerUid === myUid ? `<span class="expense-del" onclick="deleteExpense('${id}')">🗑</span>` : ''}
+        ${ex.payerUid === myUid ? `<span class="expense-del" onclick="deleteExpense('${id}')">🗑 Ezabatu</span>` : ''}
       </div>
     </div>`;
   }).join('');
